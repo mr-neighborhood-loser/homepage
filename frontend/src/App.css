@@ -1,0 +1,90 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.calculator {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.display input {
+  width: 100%;
+  max-width: 320px;
+  font-size: 1.5rem;
+  padding: 0.5rem;
+  text-align: right;
+  margin-bottom: 1rem;
+  border: 2px solid #646cff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+  max-width: 320px;
+  width: 100%;
+}
+
+button {
+  font-size: 1.2rem;
+  padding: 0.5rem 0;
+  background-color: #f0f0f0;
+  color: black; /* 番号ボタンの色を黒に設定 */
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 200ms, transform 100ms;
+}
+
+button:hover {
+  background-color: #e0e0e0;
+}
+
+button:active {
+  transform: scale(0.95);
+}
+
+button:nth-of-type(4n) {
+  background-color: #646cff;
+  color: white; /* 演算子ボタンの色は白を維持 */
+  border-color: #3b4eff;
+}
+
+button:nth-of-type(4n):hover {
+  background-color: #555ee7;
+}
