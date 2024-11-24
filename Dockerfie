@@ -1,0 +1,31 @@
+# Reactのビルドステージ
+FROM node:16 AS build-react
+
+WORKDIR /app/frontend
+COPY frontend/package.json frontend/package-lock.json ./
+RUN npm install
+COPY frontend ./
+RUN npm run build
+
+# Flaskのビルドステージ
+FROM python:3.9-slim AS build-flask
+
+WORKDIR /app/backend
+COPY backend/requirements.txt ./
+RUN python -m venv venv &&
+    . venv/bin/activate &&
+    pip install -r requirements.txt
+COPY backend ./
+
+# 最終的なランタイムステージ
+FROM python:3.9-slim
+
+WORKDIR /app
+COPY --from=build-react /app/frontend/build /app/frontend/build
+COPY --from=build-flask /app/backend /app/backend
+COPY --from=build-flask /app/backend/venv /app/backend/venv
+
+# Flaskの設定
+WORKDIR /app/backend
+EXPOSE 5000
+CMD ["pm2", "start", "app.js"]

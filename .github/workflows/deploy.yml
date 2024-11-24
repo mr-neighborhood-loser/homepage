@@ -1,0 +1,59 @@
+name: Deploy React and Flask to Xserver
+
+on:
+  push:
+    branches:
+      - main # mainブランチにプッシュされたときにCIがトリガーされます
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Reactアプリのセットアップとビルド
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16" # 使用するNode.jsのバージョンを指定
+
+      - name: Install dependencies for React app
+        run: |
+          cd frontend
+          npm install
+
+      - name: Build React app
+        run: |
+          cd frontend
+          npm run build  # 静的ファイルをビルド
+
+      # Python環境のセットアップ
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.x" # 使用するPythonのバージョンを指定
+
+      # Flaskアプリの依存関係をインストール
+      - name: Install dependencies for Flask app
+        run: |
+          cd backend
+          pip install -r requirements.txt  # 必要なパッケージをインストール
+
+      # Dockerイメージのビルドとタグ付け
+      - name: Build Docker image
+        run: |
+          docker build -t my-app-image .
+
+      # XserverにDockerコンテナをデプロイ
+      - name: Deploy to Xserver via SSH
+        run: |
+          ssh -o StrictHostKeyChecking=no "${{ secrets.XSERVER_USER }}@${{ secrets.XSERVER_IP }}"  << 'EOF'
+            mkdir -p /path/to/your/app 
+            cd /path/to/your/app 
+            docker pull my-app-image 
+            docker run -d -p 5000:5000 my-app-image     
+            EOF
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }} # GitHub Secretsに保存したSSH鍵
